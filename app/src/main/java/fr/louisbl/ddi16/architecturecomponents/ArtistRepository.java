@@ -17,8 +17,8 @@ import retrofit.client.Response;
 
 public class ArtistRepository {
 
-    public LiveData<Artist> getArtistById(String artistId) {
-        final MutableLiveData<Artist> data = new MutableLiveData<>();
+    public LiveData<ArtistEntity> getArtistById(String artistId) {
+        final MutableLiveData<ArtistEntity> data = new MutableLiveData<>();
         SpotifyApi api = new SpotifyApi();
         api.setAccessToken(MainActivity.TOKEN);
 
@@ -27,13 +27,13 @@ public class ArtistRepository {
         spotify.getArtist(artistId, new SpotifyCallback<Artist>() {
             @Override
             public void failure(SpotifyError spotifyError) {
-
+                Log.e("Artist", spotifyError.getMessage());
             }
 
             @Override
             public void success(Artist artist, Response response) {
                 Log.d("Artist", artist.name);
-                data.postValue(artist);
+                data.postValue(new ArtistEntity(artist));
             }
         });
 
