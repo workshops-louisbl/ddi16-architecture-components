@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -18,7 +21,8 @@ public class ArtistDetailFragment extends Fragment {
 
     public static final String ARTIST_ID_KEY = "ARTIST_ID_KEY";
     private ArtistDetailViewModel viewModel;
-    private TextView nameTextView;
+
+    @BindView(R.id.artist_detail_name) TextView nameTextView;
 
     public ArtistDetailFragment() {
         // Required empty public constructor
@@ -35,7 +39,7 @@ public class ArtistDetailFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        nameTextView = view.findViewById(R.id.artist_detail_name);
+        ButterKnife.bind(this, view);
     }
 
     @Override

@@ -16,12 +16,11 @@ import retrofit.client.Response;
  */
 
 public class ArtistRepository {
-    private String token = "BQCdeCKVmIFPU_MMxYrzA68btZ3vVQuKIg8VuDybs37ldUif17QkQvXNZcmGjlILn02ydusSQt37Ex6j5ZF-MzxcCXTSMjAjMIX1aKGddRcAkgLhJgUa6x1XR9q8xjep8XnzPeYXcJW0rtnkbw";
 
     public LiveData<Artist> getArtistById(String artistId) {
         final MutableLiveData<Artist> data = new MutableLiveData<>();
         SpotifyApi api = new SpotifyApi();
-        api.setAccessToken(token);
+        api.setAccessToken(MainActivity.TOKEN);
 
         SpotifyService spotify = api.getService();
 
