@@ -1,8 +1,9 @@
 package fr.louisbl.ddi16.architecturecomponents;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +11,12 @@ import android.widget.Button;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyCallback;
+import kaaes.spotify.webapi.android.SpotifyError;
+import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Artist;
+import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,6 +53,24 @@ public class MainActivity extends AppCompatActivity {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
             if (response.getType() == AuthenticationResponse.Type.TOKEN) {
                 Log.d("AccessToken", response.getAccessToken());
+
+                SpotifyApi api = new SpotifyApi();
+                String token =response.getAccessToken();
+                api.setAccessToken(token);
+
+                SpotifyService spotify = api.getService();
+
+                spotify.getArtist("3YGigudQiWDb5NdJOC5StS", new SpotifyCallback<Artist>() {
+                    @Override
+                    public void failure(SpotifyError spotifyError) {
+
+                    }
+
+                    @Override
+                    public void success(Artist artist, Response response) {
+                        Log.d("Artist", artist.name);
+                    }
+                });
             }
         }
     }
