@@ -17,29 +17,11 @@ import retrofit.client.Response;
  */
 
 public class ArtistDetailViewModel extends ViewModel {
-    private String artistId;
-    private MutableLiveData<Artist> artist = new MutableLiveData<>();
-    private String token = "";
+    private LiveData<Artist> artist;
+    private ArtistRepository artistRepo = new ArtistRepository();
 
     public void init(String artistId) {
-        this.artistId = artistId;
-        SpotifyApi api = new SpotifyApi();
-        api.setAccessToken(token);
-
-        SpotifyService spotify = api.getService();
-
-        spotify.getArtist("3YGigudQiWDb5NdJOC5StS", new SpotifyCallback<Artist>() {
-            @Override
-            public void failure(SpotifyError spotifyError) {
-
-            }
-
-            @Override
-            public void success(Artist artistData, Response response) {
-                Log.d("Artist", artistData.name);
-                artist.setValue(artistData);
-            }
-        });
+        artist = artistRepo.getArtistById(artistId);
     }
 
     public LiveData<Artist> getArtist() {
