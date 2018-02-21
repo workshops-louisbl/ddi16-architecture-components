@@ -41,9 +41,13 @@ public class ArtistDetailFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         String artistId = getArguments().getString(ARTIST_ID_KEY);
+
+        // Instantiate a ViewModel tied to the lifecycle of the fragment
         viewModel = ViewModelProviders.of(this).get(ArtistDetailViewModel.class);
         viewModel.init(artistId);
+
         viewModel.getArtist().observe(this, artist -> {
             nameTextView.setText(artist.name);
         });
