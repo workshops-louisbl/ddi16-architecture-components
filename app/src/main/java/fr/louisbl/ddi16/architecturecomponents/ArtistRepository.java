@@ -2,6 +2,7 @@ package fr.louisbl.ddi16.architecturecomponents;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import kaaes.spotify.webapi.android.SpotifyCallback;
@@ -40,8 +41,22 @@ public class ArtistRepository {
             @Override
             public void success(Artist artist, Response response) {
                 Log.d("Artist", artist.name);
-                dao.save(new ArtistEntity(artist));
+                new saveAsyncTask(dao).execute(new ArtistEntity(artist));
             }
         });
+    }
+
+    private static class saveAsyncTask extends AsyncTask<ArtistEntity, Void, Void> {
+        private ArtistEntityDao asyncDao;
+
+        saveAsyncTask(ArtistEntityDao dao) {
+            asyncDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(ArtistEntity... artistEntities) {
+            asyncDao.save(artistEntities[0]);
+            return null;
+        }
     }
 }
