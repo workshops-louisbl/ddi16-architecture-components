@@ -1,12 +1,9 @@
 package fr.louisbl.ddi16.architecturecomponents;
 
+import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
-import java.util.HashMap;
-
-import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyCallback;
 import kaaes.spotify.webapi.android.SpotifyError;
 import kaaes.spotify.webapi.android.SpotifyService;
@@ -19,21 +16,22 @@ import retrofit.client.Response;
 
 public class ArtistRepository {
 
-    private static final HashMap<String, LiveData<ArtistEntity>> simpleCache = new HashMap<>();
+    private final ArtistEntityDao dao;
+    private final SpotifyService api;
+
+    ArtistRepository(Application application) {
+        SpotiDatabase db = SpotiDatabase.getDb(application);
+        dao = db.artistEntityDao();
+        api = SpotifyApiWrapper.getInstance().getService();
+    }
 
     public LiveData<ArtistEntity> getArtistById(String artistId) {
-        LiveData<ArtistEntity> cached = simpleCache.get(artistId);
-        if (cached != null) return cached;
+        fetchArtistEntity(artistId);
+        return dao.load(artistId);
+    }
 
-        final MutableLiveData<ArtistEntity> data = new MutableLiveData<>();
-        simpleCache.put(artistId, data);
-
-        SpotifyApi api = new SpotifyApi();
-        api.setAccessToken(MainActivity.TOKEN);
-
-        SpotifyService spotify = api.getService();
-
-        spotify.getArtist(artistId, new SpotifyCallback<Artist>() {
+    private void fetchArtistEntity(String artistId) {
+        api.getArtist(artistId, new SpotifyCallback<Artist>() {
             @Override
             public void failure(SpotifyError spotifyError) {
                 Log.e("Artist", spotifyError.getMessage());
@@ -42,12 +40,8 @@ public class ArtistRepository {
             @Override
             public void success(Artist artist, Response response) {
                 Log.d("Artist", artist.name);
-                // data.setValue() _must_ be called from main Thread
-                // data.postValue() always run on the main Thread
-                data.postValue(new ArtistEntity(artist));
+                dao.save(new ArtistEntity(artist));
             }
         });
-
-        return data;
     }
 }

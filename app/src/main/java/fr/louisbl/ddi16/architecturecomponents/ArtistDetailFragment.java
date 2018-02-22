@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,10 +51,10 @@ public class ArtistDetailFragment extends Fragment {
 
         // Instantiate a ViewModel tied to the lifecycle of the fragment
         viewModel = ViewModelProviders.of(this).get(ArtistDetailViewModel.class);
-        viewModel.init(artistId);
-
-        viewModel.getArtist().observe(this, artist -> {
-            nameTextView.setText(artist.name);
+        viewModel.getArtist(artistId).observe(this, artist -> {
+            if (artist != null) {
+                nameTextView.setText(artist.getName());
+            }
         });
     }
 }

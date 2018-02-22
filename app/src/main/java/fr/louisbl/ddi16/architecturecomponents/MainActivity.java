@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String CLIENT_ID = "00b7d581f8ef4bb184ee94d055659762"; // FIXME
     private static final int REQUEST_CODE = 1001;
     private static final String REDIRECT_URI = "ddi16testapp://callback"; // FIXME
-    public static String TOKEN = "";
 
 
     @Override
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
             if (response.getType() == AuthenticationResponse.Type.TOKEN) {
                 Log.d("AccessToken", response.getAccessToken());
-                TOKEN = response.getAccessToken();
+                SpotifyApiWrapper.getInstance().setToken(response.getAccessToken());
                 showArtistDetail();
             }
         }
